@@ -1,0 +1,15 @@
+
+.personTile {
+  float: left;
+  width: 200px;
+  margin:10px;
+  border: 2px solid black;
+  border-radius: 4px;
+  -webkit-box-shadow: 2px 2px 5px 2px #00000070; 
+  box-shadow: 2px 2px 5px 2px #00000070;
+}
+
+.personPic {
+  float: left;
+  padding-right: 4px;
+}
