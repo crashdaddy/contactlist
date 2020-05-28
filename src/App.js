@@ -1,29 +1,49 @@
 import React, {Component} from 'react';
 import './App.css';
 import closeButton from './img/redX.png';
+import logo from './img/logo.jpg';
+import title from './img/title.png';
 
-class ContactPerson extends Component {
+class Header extends Component {
 
-  state = { showing: true };
-  
-  hidePanel = () => {
-    this.setState({
-      showing:false
-    })
-    this.props.togglePopup()
+  togglePopup = () => {
+    this.props.togglePopup();
   }
 
   render() {
+    return(
+      <div className="header">
+        <img src={logo} style={{height:'140px',float:'left',padding:'5px'}} alt=""/>
+        <img src={title} alt="" style={{float:'left',marginTop:'10px'}} /><br/>
+        <div style={{display:'inline-block'}}>Stay Connected</div>
+        {this.props.showPopup  ? <ContactPerson selectedPerson={this.props.currentPerson} togglePopup={this.togglePopup}/> : null} 
+ 
+      </div>
+    )
+  }
+}
+
+class ContactPerson extends Component {
+
+  hidePanel = () => {
+    this.props.togglePopup()
+  }
+
+    render() {
     return(
       <div className="windowPane">
           <div id="closeButton" style={{position: 'absolute',top:'5px',right:'5px'}}>
           <img src={closeButton} alt="" style={{width:'30px'}} onClick={this.hidePanel} />
           </div>
-          <img src={this.props.selectedPerson.picture.large} style={{float:'left',paddingRight:'5px'}} alt=""/>
+          <fieldset>
+            <legend>{this.props.selectedPerson.name.first} {this.props.selectedPerson.name.last}</legend>
+          <img src={this.props.selectedPerson.picture.large} style={{float:'left',paddingRight:'5px',height:"100px"}} alt=""/>
           {this.props.selectedPerson.location.street.number} {this.props.selectedPerson.location.street.name}<br/>
           {this.props.selectedPerson.location.city} {this.props.selectedPerson.location.state}<br/>
           {this.props.selectedPerson.location.country}<br/>
-          {this.props.selectedPerson.location.postcode}
+          {this.props.selectedPerson.location.postcode}<br/>
+          Phone: {this.props.selectedPerson.phone} Cell: {this.props.selectedPerson.cell}
+          </fieldset>
       </div>
     )
   }
@@ -109,7 +129,6 @@ class App extends Component  {
     fetch(peopleUrl)
     .then(res=>res.json())
     .then(data => {
-      console.log(data);
       this.setState({
         people: [...this.state.people,...data.results]
       })
@@ -119,11 +138,11 @@ class App extends Component  {
   render () {
   return (
     <div className="App">
+    <Header showPopup={this.state.showPopup} currentPerson={this.state.currentPerson} togglePopup={this.togglePopup} />
     <div className="outputDiv">
      {this.state.people.map((peopledata,idx) => (<Person key={idx} personID={idx} person={peopledata} selected={peopledata.id===this.state.selectedPerson} togglePopup={this.togglePopup} />))}
      
-     {this.state.showPopup  ? <ContactPerson selectedPerson={this.state.currentPerson} togglePopup={this.togglePopup}/> : null} 
-     </div>
+       </div>
     </div>
   );
 }
