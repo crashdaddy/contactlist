@@ -134,8 +134,12 @@ class Person extends Component {
   }
 
   render() {
+    let bgColor = {backgroundColor: 'white'}
+    if(this.props.selected) {
+      bgColor= {backgroundColor: 'lightblue'}
+    }
     return (
-      <div className="personTile" onClick={this.togglePopup}>
+      <div className="personTile" style={bgColor} onClick={this.togglePopup}>
         <img className="personPic" src={this.props.person.picture.medium} alt=""/>
         <p style={{fontSize:'10pt'}}>{this.props.person.name.title} {this.props.person.name.first} {this.props.person.name.last}</p>
       </div>
@@ -285,7 +289,7 @@ class App extends Component  {
   render () {
     let results;
     if (this.state.people.length>0) {
-      results= this.state.people.map((peopledata,idx) => (<Person key={idx} personID={idx} person={peopledata} selected={peopledata.id===this.state.selectedPerson} togglePopup={this.togglePopup} />))
+      results= this.state.people.map((peopledata,idx) => (<Person key={idx} personID={idx} person={peopledata} selected={peopledata.id===this.state.selectedPersonId} togglePopup={this.togglePopup} />))
     }
   return (
     <div className="App">
