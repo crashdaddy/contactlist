@@ -37,7 +37,7 @@ class Filter extends Component {
       <div>
         <img name ="male" alt="" src={male} style={{width:'30px'}} onClick={(e) => this.setGender(e)} />
         <img name="female" alt="" src={female} style={{width:'30px'}} onClick={(e)=> this.setGender(e)} />
-        <img name="globe" alt="" src={globe} style={{width:'30px'}} />
+        <img name="globe" alt="" src={globe} style={{width:'30px'}} onClick={this.props.toggleFilters} />
       </div>
     )
   }
@@ -54,20 +54,27 @@ class Header extends Component {
   }
 
   render() {
+    let displayStyle={display: 'none'};
+
+    if (this.props.showFilters) {
+      displayStyle = {display:'inline-block'};
+    }
     return(
       <div className="header">
         <img src={logo} style={{height:'140px',float:'left',padding:'5px'}} alt=""/>
         <img src={title} alt="" style={{marginTop:'10px'}} /><br/>
         <div>
-        <Filter setGender={this.props.setGender} />
-        <input style={{display:'inline-block'}} type="checkbox" onClick={(e)=> this.handleAllChecked(e)}  value="checkedall" />All
-        <ul style={{display:'inline-block',marginLeft:'-30px'}}>
+        <Filter setGender={this.props.setGender} toggleFilters={this.props.toggleFilters} />
+        <div style={{display:'inline-block',marginTop:'-30px'}}>
+        <input style={displayStyle} type="checkbox" onClick={(e)=> this.handleAllChecked(e)}  value="checkedall" /><span style={displayStyle} >All</span>
+        <ul style={displayStyle}>
         {
           this.props.nationality.map((country) => {
             return (<CheckBox  id={country.id} key={country.id} handleCheckChildElement={this.props.handleCheckChildElement}  {...country} />)
           })
         }
         </ul>
+        </div>
         </div>
        
         {this.props.showPopup  ? <ContactPerson selectedPerson={this.props.currentPerson} togglePopup={this.togglePopup}/> : null} 
@@ -147,6 +154,7 @@ class App extends Component  {
         currentPerson: {},
         selectedPerson: '',
         showPopup: false,
+        showFilters: false,
         abvLevel : 1,
         page: 1,
         gender: '',
@@ -220,7 +228,6 @@ class App extends Component  {
  }
 
  handleCheckChildElement = (countryName,checkedBool) => {   
-   console.log(countryName);
    let stateNationalities = this.state.nationalities;
    let nationalities = this.state.nationality;
       nationalities.forEach(nationality => {     
@@ -246,6 +253,12 @@ class App extends Component  {
       this.fetchData(1,this.state.gender,stateNationalities);
 }
 
+  toggleFilters = () => {
+    this.setState({
+      showFilters: !this.state.showFilters
+    })
+  }
+
   togglePopup = (newPerson,selectedPerson) => {  
     this.setState({currentPerson: newPerson});
     this.setState({selectedPersonId: selectedPerson})
@@ -258,7 +271,6 @@ class App extends Component  {
 
   fetchData = (pageNum,g,nationality) => {
     let natStr=nationality.join(",")
-    console.log(natStr);
     let peopleUrl = `https://randomuser.me/api/?results=50&page=${pageNum}&gender=${g}&nationality=${natStr}`;
 
     fetch(peopleUrl)
@@ -277,7 +289,7 @@ class App extends Component  {
     }
   return (
     <div className="App">
-    <Header showPopup={this.state.showPopup} handleAllChecked={this.handleAllChecked} handleCheckChildElement={this.handleCheckChildElement} nationality={this.state.nationality} gender={this.state.gender} setGender={this.setGender} currentPerson={this.state.currentPerson} togglePopup={this.togglePopup} />
+    <Header showPopup={this.state.showPopup} toggleFilters={this.toggleFilters} showFilters={this.state.showFilters} handleAllChecked={this.handleAllChecked} handleCheckChildElement={this.handleCheckChildElement} nationality={this.state.nationality} gender={this.state.gender} setGender={this.setGender} currentPerson={this.state.currentPerson} togglePopup={this.togglePopup} />
     <div className="outputDiv">
       {results}     
     </div>
