@@ -29,7 +29,9 @@ render() {
 class Filter extends Component {
 
   setGender = (e) => {
-    this.props.setGender(e.target.name);
+    if (this.props.gender===e.target.name) {
+      this.props.setGender('');
+    } else this.props.setGender(e.target.name);
   }
 
   render() {
@@ -64,7 +66,7 @@ class Header extends Component {
         <img src={logo} style={{height:'140px',float:'left',padding:'5px'}} alt=""/>
         <img src={title} alt="" style={{marginTop:'10px'}} /><br/>
         <div>
-        <Filter setGender={this.props.setGender} toggleFilters={this.props.toggleFilters} />
+        <Filter setGender={this.props.setGender} gender={this.props.gender} toggleFilters={this.props.toggleFilters} />
         <div style={{display:'inline-block',marginTop:'-30px'}}>
         <input style={displayStyle} type="checkbox" onClick={(e)=> this.handleAllChecked(e)}  value="checkedall" /><span style={displayStyle} >All</span>
         <ul style={displayStyle}>
@@ -216,6 +218,7 @@ class App extends Component  {
       page: 1          
     })
     this.fetchData(1,g,this.state.nationalities);
+    console.log("gender:" + g)
  }
 
  handleAllChecked = (checkedBool) => {
